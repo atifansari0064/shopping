@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Admin Dashboard | Afiya Collection</title>
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body class="admin-body">
+    <div id="toast-root" class="toast-root"></div>
+    <aside class="admin-sidebar"><a class="brand" href="index.html"><span
+                class="brand-mark">AF</span><span><b>AFIYA</b><small>ADMIN</small></span></a>
+        <nav><a class="active" href="#overview">Overview</a><a href="#products">Products</a><a
+                href="#enquiries">Enquiries</a><a href="index.html">View Store ↗</a></nav><button id="logoutBtn" type="button" class="sidebar-logout"> Sign out </button>
+    </aside>
+    <main class="admin-main">
+        <header class="admin-top">
+            <div><span class="eyebrow">CONTROL CENTRE</span>
+                <h1>Store dashboard</h1>
+            </div><button id="mobileSidebar" class="icon-btn">☰</button>
+        </header>
+        <section id="overview" class="admin-section">
+            <div id="stats" class="admin-stats">
+                <div class="stat-box skeleton"></div>
+                <div class="stat-box skeleton"></div>
+                <div class="stat-box skeleton"></div>
+                <div class="stat-box skeleton"></div>
+                <div class="stat-box skeleton"></div>
+            </div>
+            <div class="admin-two-col">
+                <div class="admin-panel">
+                    <div class="panel-head">
+                        <div><span class="eyebrow">RECENT</span>
+                            <h2>Recent enquiries</h2>
+                        </div><a href="#enquiries">View all</a>
+                    </div>
+                    <div id="recentEnquiries" class="admin-list"></div>
+                </div>
+                <div class="admin-panel">
+                    <div class="panel-head">
+                        <div><span class="eyebrow">QUICK ACTION</span>
+                            <h2>Catalogue</h2>
+                        </div>
+                    </div><button class="btn btn-primary wide" id="openProductForm">+ Add product</button>
+                    <p class="panel-note">Add products with images, price, unit, category, colours and stock status.</p>
+                </div>
+            </div>
+        </section>
+        <section id="products" class="admin-section">
+            <div class="admin-panel">
+                <div class="panel-head">
+                    <div><span class="eyebrow">INVENTORY</span>
+                        <h2>Products</h2>
+                    </div><button class="btn btn-primary" id="openProductForm2">+ Add product</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        <section id="enquiries" class="admin-section">
+            <div class="admin-panel">
+                <div class="panel-head">
+                    <div><span class="eyebrow">CUSTOMER REQUESTS</span>
+                        <h2>Enquiries</h2>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Product</th>
+                                <th>Qty</th>
+                                <th>Phone</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="enquiryTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+    <div id="productModal" class="modal" aria-hidden="true">
+        <div class="modal-panel admin-modal"><button class="modal-close" data-close-modal>×</button><span
+                class="eyebrow">CATALOGUE MANAGEMENT</span>
+            <h2 id="productFormTitle">Add product</h2>
+            <form id="productForm"><input type="hidden" id="productId">
+                <div class="form-grid"><label>Product name<input id="pName" required
+                            maxlength="120"></label><label>Category<select id="pCategory" required>
+    <option value="">Select category</option>
+</select></label><label>Subcategory<input id="pSubcategory" maxlength="80"
+                            placeholder="Cotton, Designer Lace, Kurta…"></label><label>Fabric type<input
+                            id="pFabricType" maxlength="80" placeholder="Cotton, Rayon…"></label><label>Price<input
+                            id="pPrice" type="number" min="0" step="0.01" required></label><label>Unit<select id="pUnit"
+                            required>
+                            <option value="meter">meter</option>
+                            <option value="piece">piece</option>
+                        </select></label><label>Colors<input id="pColors" maxlength="200"
+                            placeholder="Pink, Blue, Black"></label><label>Stock status<select id="pStock">
+                            <option>Available</option>
+                            <option>Limited</option>
+                            <option>Out of Stock</option>
+                        </select></label></div><label>Description<textarea id="pDescription" rows="4"
+                        maxlength="1000"></textarea></label><label>Product image<input id="pImage" type="file"
+                        accept="image/*"></label>
+                <div id="imagePreview" class="image-preview"></div>
+                <div class="form-actions"><button type="button" class="btn btn-ghost"
+                        data-close-modal>Cancel</button><button class="btn btn-primary" type="submit">Save
+                        product</button></div>
+            </form>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>

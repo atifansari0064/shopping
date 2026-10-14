@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Admin Login | Afiya Collection</title>
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+
+<body class="auth-body">
+    <div id="toast-root" class="toast-root"></div>
+    <div class="auth-card"><a class="brand brand-center" href="index.html"><span
+                class="brand-mark">AF</span><span><b>AFIYA</b><small>COLLECTION</small></span></a><span
+            class="eyebrow">PRIVATE AREA</span>
+        <h1>Admin Login</h1>
+        <p>Sign in with your Supabase admin account.</p>
+        <form id="login-form"><label>Email<input id="loginEmail" type="email" required
+                    autocomplete="username"></label><label>Password<input id="loginPassword" type="password" required
+                    autocomplete="current-password"></label><button class="btn btn-primary wide" type="submit">Sign
+                in</button></form><a class="back-link" href="index.html">← Back to store</a>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+
+</html>

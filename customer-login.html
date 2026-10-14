@@ -1,0 +1,467 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Customer Login | Afiya Collection</title>
+
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <style>
+    .customer-login-page {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+    }
+
+    .customer-login-card {
+      width: 100%;
+      max-width: 480px;
+      background: #fffaf7;
+      border: 1px solid #ead9dc;
+      border-radius: 20px;
+      padding: 35px;
+      box-shadow: 0 15px 40px rgba(40, 25, 35, 0.08);
+    }
+
+    .customer-login-card h1 {
+      margin: 8px 0 10px;
+    }
+
+    .customer-login-card > p {
+      margin-bottom: 25px;
+    }
+
+    .login-form {
+      display: grid;
+      gap: 16px;
+    }
+
+    .login-form label {
+      display: grid;
+      gap: 7px;
+      font-weight: 600;
+    }
+
+    .login-form input {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid #dfcdd1;
+      border-radius: 10px;
+      background: white;
+      font: inherit;
+      box-sizing: border-box;
+    }
+
+    .login-form button {
+      margin-top: 8px;
+      width: 100%;
+    }
+
+    .login-message {
+      display: none;
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+
+    .login-message.error {
+      display: block;
+      background: #ffe8e8;
+      color: #9d2222;
+    }
+
+    .login-message.success {
+      display: block;
+      background: #e7f7ec;
+      color: #216b38;
+    }
+
+    .login-footer {
+      margin-top: 20px;
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    .login-footer a {
+      font-weight: 600;
+    }
+
+    .back-store {
+      display: block;
+      margin-top: 20px;
+      text-align: center;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div id="toast-root" class="toast-root"></div>
+
+  <div id="site-header"></div>
+
+  <main class="customer-login-page">
+
+```
+<div class="customer-login-card">
+
+  <span class="eyebrow">CUSTOMER ACCOUNT</span>
+
+  <h1>Welcome back</h1>
+
+  <p>
+    Login to your Afiya Collection account to place and track your orders.
+  </p>
+
+  <div id="loginMessage" class="login-message"></div>
+
+  <form id="customerLoginForm" class="login-form">
+
+    <label>
+      Email
+
+      <input
+        id="customerLoginEmail"
+        type="email"
+        required
+        autocomplete="email"
+        placeholder="Enter your email">
+    </label>
+
+    <label>
+      Password
+
+      <input
+        id="customerLoginPassword"
+        type="password"
+        required
+        autocomplete="current-password"
+        placeholder="Enter your password">
+    </label>
+
+    <button
+      id="customerLoginBtn"
+      class="btn btn-primary"
+      type="submit">
+      Login
+    </button>
+
+  </form>
+
+  <div class="login-footer">
+
+    <div>
+      Don't have an account?
+      <a href="register.html">Create Account</a>
+    </div>
+
+    <div>
+      <a href="admin.html">Admin Login</a>
+    </div>
+
+  </div>
+
+  <a class="back-store" href="index.html">
+    ← Back to store
+  </a>
+
+</div>
+```
+
+  </main>
+
+  <div id="site-footer"></div>
+
+  <!-- Supabase -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Supabase connection -->
+
+  <script src="js/supabase.js"></script>
+
+  <!-- Header/Footer -->
+
+  <script src="js/main.js"></script>
+
+  <script>
+
+    const customerLoginForm =
+      document.getElementById("customerLoginForm");
+
+    const customerLoginBtn =
+      document.getElementById("customerLoginBtn");
+
+    const loginMessage =
+      document.getElementById("loginMessage");
+
+
+    function showLoginMessage(message, type) {
+
+      loginMessage.textContent = message;
+
+      loginMessage.className =
+        "login-message " + type;
+
+    }
+
+
+    function clearLoginMessage() {
+
+      loginMessage.textContent = "";
+
+      loginMessage.className =
+        "login-message";
+
+    }
+
+
+    /*
+     * Check if customer is already logged in.
+     *
+     * If already logged in, go directly to order page.
+     */
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      async function () {
+
+        if (!sb) {
+          return;
+        }
+
+        const {
+          data,
+          error
+        } = await sb.auth.getSession();
+
+        if (error) {
+          console.error(
+            "Session check error:",
+            error
+          );
+
+          return;
+        }
+
+        if (data.session) {
+
+          window.location.href =
+            "order.html";
+
+        }
+
+      }
+    );
+
+
+    /*
+     * Customer Login
+     */
+
+    customerLoginForm.addEventListener(
+      "submit",
+      async function (e) {
+
+        e.preventDefault();
+
+        clearLoginMessage();
+
+
+        /*
+         * Check Supabase connection
+         */
+
+        if (!sb) {
+
+          showLoginMessage(
+            "Supabase connection is not available. Please check js/supabase.js.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        const email =
+          document
+            .getElementById("customerLoginEmail")
+            .value
+            .trim()
+            .toLowerCase();
+
+        const password =
+          document
+            .getElementById("customerLoginPassword")
+            .value;
+
+
+        customerLoginBtn.disabled =
+          true;
+
+        customerLoginBtn.textContent =
+          "Logging in...";
+
+
+        try {
+
+          /*
+           * Login with Supabase Auth
+           */
+
+          const {
+            data,
+            error
+          } = await sb.auth.signInWithPassword({
+
+            email: email,
+
+            password: password
+
+          });
+
+
+          /*
+           * Login failed
+           */
+
+          if (error) {
+
+            throw error;
+
+          }
+
+
+          /*
+           * Make sure session exists
+           */
+
+          if (!data.session) {
+
+            throw new Error(
+              "Login was not completed. Please verify your email first."
+            );
+
+          }
+
+
+          /*
+           * Successful customer login
+           */
+
+          showLoginMessage(
+            "Login successful! Redirecting to your order page...",
+            "success"
+          );
+
+
+          setTimeout(function () {
+
+            window.location.href =
+              "order.html";
+
+          }, 700);
+
+
+        } catch (error) {
+
+          console.error(
+            "Customer login error:",
+            error
+          );
+
+
+          let message =
+            error?.message ||
+            "Login failed. Please try again.";
+
+
+          const lowerMessage =
+            message.toLowerCase();
+
+
+          /*
+           * Email not verified
+           */
+
+          if (
+            lowerMessage.includes("email not confirmed") ||
+            lowerMessage.includes("email not verified")
+          ) {
+
+            message =
+              "Your email is not verified yet. Please check your email and click the confirmation link before logging in.";
+
+          }
+
+
+          /*
+           * Wrong email/password
+           */
+
+          else if (
+            lowerMessage.includes("invalid login credentials")
+          ) {
+
+            message =
+              "Incorrect email or password. If you just registered, make sure you have confirmed your email first.";
+
+          }
+
+
+          /*
+           * Rate limit
+           */
+
+          else if (
+            lowerMessage.includes("rate limit")
+          ) {
+
+            message =
+              "Too many login attempts. Please wait a little and try again.";
+
+          }
+
+
+          showLoginMessage(
+            message,
+            "error"
+          );
+
+
+        } finally {
+
+          customerLoginBtn.disabled =
+            false;
+
+          customerLoginBtn.textContent =
+            "Login";
+
+        }
+
+      }
+    );
+
+  </script>
+
+</body>
+
+</html>

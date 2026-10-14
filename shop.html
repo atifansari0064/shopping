@@ -1,0 +1,334 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Shop Catalogue | Afiya Collection</title>
+
+  <meta
+    name="description"
+    content="Browse Afiya Collection ladies fabrics, laces, borders and ready-made clothing."
+  >
+
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+
+<body>
+
+  <!-- Toast notifications -->
+  <div id="toast-root" class="toast-root"></div>
+
+  <!-- Header -->
+  <div id="site-header"></div>
+
+  <main>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+      <div class="container">
+        <span class="eyebrow">CATALOGUE</span>
+
+        <h1>Shop the collection</h1>
+
+        <p>
+          Search fabrics, laces and selected ready-made clothing.
+        </p>
+      </div>
+    </section>
+
+
+    <!-- Catalogue -->
+    <section class="section">
+
+      <div class="container">
+
+        <!-- Filters -->
+        <div class="filters">
+
+          <!-- Search -->
+          <label class="search-box">
+            ⌕
+            <input
+              id="search"
+              type="search"
+              placeholder="Search products..."
+              aria-label="Search products"
+            >
+          </label>
+
+
+          <!-- Category -->
+          <select id="categoryFilter" aria-label="Filter by category">
+            <option value="">All categories</option>
+            <option value="Fabric">Fabric</option>
+            <option value="Lace">Lace</option>
+            <option value="Ready-Made">Ready-Made</option>
+          </select>
+
+
+          <!-- Fabric -->
+          <select id="fabricFilter" aria-label="Filter by fabric type">
+            <option value="">All fabric types</option>
+            <option value="Cotton">Cotton</option>
+            <option value="Rayon">Rayon</option>
+            <option value="Linen">Linen</option>
+            <option value="Lyocell">Lyocell</option>
+            <option value="Printed">Printed</option>
+            <option value="Plain">Plain</option>
+            <option value="Dress Material">Dress Material</option>
+            <option value="Seasonal">Seasonal</option>
+            <option value="Other">Other</option>
+          </select>
+
+
+          <!-- Price -->
+          <div class="price-filter">
+
+            <label>
+              ₹
+              <input
+                id="minPrice"
+                type="number"
+                min="0"
+                step="1"
+                placeholder="Min"
+                aria-label="Minimum price"
+              >
+            </label>
+
+            <span>–</span>
+
+            <label>
+              ₹
+              <input
+                id="maxPrice"
+                type="number"
+                min="0"
+                step="1"
+                placeholder="Max"
+                aria-label="Maximum price"
+              >
+            </label>
+
+          </div>
+
+
+          <!-- Sort -->
+          <select id="sortFilter" aria-label="Sort products">
+            <option value="newest">Newest</option>
+            <option value="price-low">Price: low to high</option>
+            <option value="price-high">Price: high to low</option>
+            <option value="name">Name A–Z</option>
+          </select>
+
+        </div>
+
+
+        <!-- Catalogue Meta -->
+        <div class="catalogue-meta">
+
+          <span id="resultCount">
+            Loading...
+          </span>
+
+          <button
+            class="btn-reset"
+            id="clearFilters"
+            type="button"
+          >
+            Clear filters
+          </button>
+
+        </div>
+
+
+        <!-- Products -->
+        <div
+          id="catalogue-grid"
+          class="product-grid"
+        ></div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- Footer -->
+  <div id="site-footer"></div>
+
+
+  <!-- ============================= -->
+  <!-- PRODUCT ENQUIRY MODAL -->
+  <!-- ============================= -->
+
+  <div
+    id="enquiry-modal"
+    class="modal"
+    aria-hidden="true"
+  >
+
+    <div
+      class="modal-panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="enquiry-title"
+    >
+
+      <!-- Close -->
+      <button
+        class="modal-close"
+        type="button"
+        data-close-modal
+        aria-label="Close enquiry form"
+      >
+        ×
+      </button>
+
+
+      <span class="eyebrow">
+        PRODUCT ENQUIRY
+      </span>
+
+
+      <h2 id="enquiry-title">
+        Ask about this product
+      </h2>
+
+
+      <form id="enquiry-form">
+
+        <!-- Product UUID -->
+        <input
+          type="hidden"
+          id="enquiryProductId"
+          name="product_id"
+        >
+
+
+        <!-- Customer details -->
+        <div class="form-grid">
+
+          <label>
+            Name
+
+            <input
+              id="customerName"
+              name="name"
+              type="text"
+              required
+              maxlength="80"
+              autocomplete="name"
+            >
+          </label>
+
+
+          <label>
+            Phone
+
+            <input
+              id="customerPhone"
+              name="phone"
+              type="tel"
+              required
+              inputmode="numeric"
+              pattern="[0-9]{8,15}"
+              maxlength="15"
+              autocomplete="tel"
+              placeholder="Enter phone number"
+            >
+          </label>
+
+
+          <label>
+            Quantity
+
+            <input
+              id="quantity"
+              name="quantity"
+              type="number"
+              required
+              min="1"
+              step="0.1"
+              value="1"
+            >
+          </label>
+
+        </div>
+
+
+        <!-- Product name -->
+        <label>
+          Product
+
+          <input
+            id="enquiryProductName"
+            name="product"
+            type="text"
+            readonly
+          >
+        </label>
+
+
+        <!-- Message -->
+        <label>
+          Message
+
+          <textarea
+            id="enquiryMessage"
+            name="message"
+            maxlength="500"
+            rows="4"
+            placeholder="Tell us what you need..."
+          ></textarea>
+        </label>
+
+
+        <!-- Submit -->
+        <button
+          class="btn btn-primary"
+          type="submit"
+        >
+          Send Enquiry
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- ============================= -->
+  <!-- JAVASCRIPT -->
+  <!-- ============================= -->
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- App scripts -->
+  <script src="js/supabase.js"></script>
+  <script src="js/main.js"></script>
+<script src="js/enquiry.js?v=2"></script>
+  <script src="js/products.js"></script>
+
+</body>
+
+</html>

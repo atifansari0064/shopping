@@ -1,0 +1,538 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Customer Registration | Afiya Collection</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <style>
+    .auth-page {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 520px;
+      background: #fffaf7;
+      border: 1px solid #ead9dc;
+      border-radius: 20px;
+      padding: 35px;
+      box-shadow: 0 15px 40px rgba(40, 25, 35, 0.08);
+    }
+
+    .auth-card h1 {
+      margin: 8px 0 10px;
+    }
+
+    .auth-card > p {
+      margin-bottom: 25px;
+    }
+
+    .auth-form {
+      display: grid;
+      gap: 16px;
+    }
+
+    .auth-form label {
+      display: grid;
+      gap: 7px;
+      font-weight: 600;
+    }
+
+    .auth-form input {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid #dfcdd1;
+      border-radius: 10px;
+      background: white;
+      font: inherit;
+      box-sizing: border-box;
+    }
+
+    .auth-form button {
+      margin-top: 8px;
+      width: 100%;
+    }
+
+    .auth-message {
+      display: none;
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+
+    .auth-message.error {
+      display: block;
+      background: #ffe8e8;
+      color: #9d2222;
+    }
+
+    .auth-message.success {
+      display: block;
+      background: #e7f7ec;
+      color: #216b38;
+    }
+
+    .auth-footer {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .auth-footer a {
+      font-weight: 600;
+    }
+
+    .email-note {
+      display: none;
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 10px;
+      background: #f7f0f2;
+      line-height: 1.5;
+    }
+
+    .email-note a {
+      font-weight: 600;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div id="toast-root" class="toast-root"></div>
+
+  <div id="site-header"></div>
+
+  <main class="auth-page">
+
+```
+<div class="auth-card">
+
+  <span class="eyebrow">CUSTOMER ACCOUNT</span>
+
+  <h1>Create your account</h1>
+
+  <p>
+    Register before placing your order with Afiya Collection.
+  </p>
+
+  <div id="authMessage" class="auth-message"></div>
+
+  <form id="registerForm" class="auth-form">
+
+    <label>
+      Full Name
+      <input
+        id="fullName"
+        type="text"
+        maxlength="80"
+        required
+        autocomplete="name"
+        placeholder="Enter your full name">
+    </label>
+
+    <label>
+      Phone
+      <input
+        id="phone"
+        type="tel"
+        maxlength="15"
+        required
+        autocomplete="tel"
+        inputmode="tel"
+        placeholder="Enter your phone number">
+    </label>
+
+    <label>
+      Email
+      <input
+        id="email"
+        type="email"
+        required
+        autocomplete="email"
+        placeholder="Enter your email">
+    </label>
+
+    <label>
+      Password
+      <input
+        id="password"
+        type="password"
+        minlength="6"
+        required
+        autocomplete="new-password"
+        placeholder="Minimum 6 characters">
+    </label>
+
+    <label>
+      Confirm Password
+      <input
+        id="confirmPassword"
+        type="password"
+        minlength="6"
+        required
+        autocomplete="new-password"
+        placeholder="Re-enter your password">
+    </label>
+
+    <button
+      id="registerBtn"
+      class="btn btn-primary"
+      type="submit">
+      Create Account
+    </button>
+
+  </form>
+
+  <div id="emailNote" class="email-note">
+    <strong>Almost done!</strong><br>
+    We've sent a confirmation email to
+    <span id="registeredEmail"></span>.
+    Please confirm your email first, then
+    <a href="login.html">login to your account</a>.
+  </div>
+
+  <div class="auth-footer">
+    Already have an account?
+    <a href="customer-login.html">Login</a>
+  </div>
+
+</div>
+```
+
+  </main>
+
+  <div id="site-footer"></div>
+
+  <!-- Supabase -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Your Supabase connection -->
+
+  <script src="js/supabase.js"></script>
+
+  <!-- Header/Footer -->
+
+  <script src="js/main.js"></script>
+
+  <script>
+    const registerForm =
+      document.getElementById("registerForm");
+
+    const registerBtn =
+      document.getElementById("registerBtn");
+
+    const authMessage =
+      document.getElementById("authMessage");
+
+    const emailNote =
+      document.getElementById("emailNote");
+
+    const registeredEmail =
+      document.getElementById("registeredEmail");
+
+
+    function showMessage(message, type) {
+
+      authMessage.textContent = message;
+
+      authMessage.className =
+        "auth-message " + type;
+
+    }
+
+
+    function hideMessage() {
+
+      authMessage.textContent = "";
+
+      authMessage.className =
+        "auth-message";
+
+    }
+
+
+    registerForm.addEventListener(
+      "submit",
+      async function (e) {
+
+        e.preventDefault();
+
+        hideMessage();
+
+        emailNote.style.display = "none";
+
+
+        /*
+         * Check Supabase connection
+         */
+
+        if (!sb) {
+
+          showMessage(
+            "Supabase connection is not available. Please check js/supabase.js.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        /*
+         * Get form values
+         */
+
+        const fullName =
+          document
+            .getElementById("fullName")
+            .value
+            .trim();
+
+        const phone =
+          document
+            .getElementById("phone")
+            .value
+            .trim();
+
+        const email =
+          document
+            .getElementById("email")
+            .value
+            .trim()
+            .toLowerCase();
+
+        const password =
+          document
+            .getElementById("password")
+            .value;
+
+        const confirmPassword =
+          document
+            .getElementById("confirmPassword")
+            .value;
+
+
+        /*
+         * Basic validation
+         */
+
+        if (!fullName) {
+
+          showMessage(
+            "Please enter your full name.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        if (!phone) {
+
+          showMessage(
+            "Please enter your phone number.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        if (password.length < 6) {
+
+          showMessage(
+            "Password must be at least 6 characters.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        if (password !== confirmPassword) {
+
+          showMessage(
+            "Passwords do not match.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        /*
+         * Disable button while request is running
+         */
+
+        registerBtn.disabled = true;
+
+        registerBtn.textContent =
+          "Creating account...";
+
+
+        try {
+
+          /*
+           * Create Supabase Auth account
+           *
+           * Email confirmation is ON.
+           */
+
+          const {
+            data,
+            error
+          } = await sb.auth.signUp({
+
+            email: email,
+
+            password: password,
+
+            options: {
+
+              data: {
+
+                full_name: fullName,
+
+                phone: phone
+
+              }
+
+            }
+
+          });
+
+
+          /*
+           * Supabase returned an error
+           */
+
+          if (error) {
+
+            throw error;
+
+          }
+
+
+          /*
+           * Account successfully created.
+           *
+           * We DO NOT insert into customers here.
+           *
+           * The database trigger handles that.
+           */
+
+
+          registerForm.reset();
+
+
+          showMessage(
+            "Account created successfully! Please check your email and confirm your account before logging in.",
+            "success"
+          );
+
+
+          registeredEmail.textContent =
+            email;
+
+          emailNote.style.display =
+            "block";
+
+
+          /*
+           * Do not automatically redirect.
+           *
+           * Customer needs to confirm email first.
+           */
+
+
+        } catch (error) {
+
+          console.error(
+            "Registration error:",
+            error
+          );
+
+
+          let message =
+            error?.message ||
+            "Registration failed. Please try again.";
+
+
+          /*
+           * Make common Supabase errors
+           * easier for the customer to understand.
+           */
+
+          const lowerMessage =
+            message.toLowerCase();
+
+
+          if (
+            lowerMessage.includes("already registered") ||
+            lowerMessage.includes("already exists")
+          ) {
+
+            message =
+              "This email is already registered. Please login instead.";
+
+          }
+
+
+          if (
+            lowerMessage.includes("invalid email")
+          ) {
+
+            message =
+              "Please enter a valid email address.";
+
+          }
+
+
+          if (
+            lowerMessage.includes("password")
+            &&
+            lowerMessage.includes("weak")
+          ) {
+
+            message =
+              "Please choose a stronger password.";
+
+          }
+
+
+          showMessage(
+            message,
+            "error"
+          );
+
+
+        } finally {
+
+          registerBtn.disabled =
+            false;
+
+          registerBtn.textContent =
+            "Create Account";
+
+        }
+
+      }
+    );
+  </script>
+
+</body>
+
+</html>
